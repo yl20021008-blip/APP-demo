@@ -1,12 +1,13 @@
-# 更新记录
+# IELTS Vocabulary Planner 更新记录
 
-## v1.2.0 Cloud User
+## 1.2.1-cloud-user-hotfix
 
-- 新增 Supabase / PostgreSQL 云数据库支持；
-- 保留本地 SQLite fallback；
-- 新增学习者名称 + PIN 登录；
-- 公共词库共享，不同学习者学习进度独立；
-- 重构学习状态表为 user_id + word_id；
-- 复习记录、统计、故事记忆按学习者独立保存；
-- 保留 v1.1 的音标字段导入、批量导入和词汇补全功能；
-- 适配 Streamlit Cloud Secrets：DATABASE_URL。
+- 修复 Streamlit Cloud 部署时可能因为中文页面文件名导致的导航初始化错误。
+- 将 `pages/` 下页面文件名改为英文路径，页面内部标题仍保留中文。
+- 保留 v1.2 的云端 PostgreSQL、学习者名称 + PIN、公共词库共享、独立学习进度、批量导入、音标导入、故事记忆等功能。
+
+## 1.2.0-cloud-user
+
+- 增加 Supabase / PostgreSQL 云端保存。
+- 增加学习者名称 + PIN 登录。
+- 公共词库共享，每个学习者独立学习状态、复习记录、统计和故事记忆。
