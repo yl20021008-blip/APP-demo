@@ -1,0 +1,7 @@
+streamlit>=1.57
+pandas>=2.2
+openpyxl>=3.1
+plotly>=6.0
+SQLAlchemy>=2.0
+requests>=2.32
+python-dotenv>=1.0
