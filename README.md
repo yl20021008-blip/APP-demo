@@ -1,36 +1,55 @@
-# IELTS Vocabulary Planner v1.2.1
+# IELTS Vocabulary Planner v1.2.2
 
-这是一个 Streamlit + Supabase/PostgreSQL 的雅思词汇学习 APP。
+这是 v1.2.2 云端保存 + 用户区分热修复版。
 
-## 核心功能
+## 重要部署设置
 
-- 云端数据库保存；
-- 学习者名称 + PIN 区分用户；
-- 公共词库共享；
-- 每个学习者独立学习进度；
-- 每个学习者独立复习计划；
-- 批量导入 Excel / CSV；
-- 导入时识别 phonetic / uk_phonetic / us_phonetic；
-- 自动补全音标、发音、例句和翻译；
-- 故事记忆。
+Streamlit Cloud 的 Main file path 请填写：
 
-## Streamlit Cloud 设置
+```text
+main_app/app.py
+```
 
-Main file path：
+不是：
 
 ```text
 app.py
 ```
 
-Secrets：
+这样可以绕开 Streamlit Cloud 自动扫描根目录 `pages/` 目录时出现的页面导航报错。
+
+## 上传 GitHub 前建议
+
+如果你的旧仓库里已经有 `pages/` 文件夹，建议在本地仓库里删除它，再复制本版本文件。
+
+当前版本使用：
+
+```text
+app_pages/
+main_app/app.py
+```
+
+不再依赖 Streamlit 自动多页面系统。
+
+## Streamlit Secrets
+
+在 Streamlit Cloud 里设置：
 
 ```toml
-DATABASE_URL = "postgresql://postgres.xxxxx:你的密码@xxxxx.pooler.supabase.com:6543/postgres"
+DATABASE_URL = "你的 Supabase PostgreSQL 连接字符串"
 APP_MODE = "cloud"
 ```
 
-不要把 DATABASE_URL 写入 GitHub。
+不要把 DATABASE_URL 放进 GitHub。
 
-## v1.2.1 修复
+## 功能
 
-为避免 Streamlit Cloud 在多页面导航初始化时对中文页面文件名处理不稳定，本版将 `pages/` 内文件名改为英文路径；页面内部标题仍然是中文。
+- Supabase / PostgreSQL 云端保存
+- 学习者名称 + PIN
+- 公共词库共享
+- 每个人独立学习进度
+- 每个人独立复习计划
+- 每个人独立学习统计
+- 每个人独立故事记忆
+- 批量导入 Excel / CSV
+- 支持 phonetic / 音标字段导入

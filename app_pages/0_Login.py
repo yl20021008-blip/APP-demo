@@ -2,8 +2,6 @@ from __future__ import annotations
 import streamlit as st
 from modules.auth_ui import render_login_box
 from modules.database import get_database_mode, init_database
-
-st.set_page_config(page_title='学习者登录', page_icon='👤', layout='centered')
 init_database()
 st.title('👤 学习者登录')
 st.caption('同一个公共词库，不同学习者的进度互不影响。')

@@ -1,0 +1,9 @@
+这版部署时请注意：
+
+1. 建议删除旧仓库里的 pages 文件夹。
+2. 复制本文件夹所有内容到 GitHub 本地仓库。
+3. Commit + Push。
+4. Streamlit Cloud 里把 Main file path 改成：
+   main_app/app.py
+
+如果继续填 app.py，并且旧 pages 文件夹还在，可能仍然会报 Streamlit 页面导航错误。

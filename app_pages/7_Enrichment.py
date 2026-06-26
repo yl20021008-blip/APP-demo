@@ -5,8 +5,6 @@ from sqlalchemy import select
 from modules.auth_ui import require_login
 from modules.database import get_connection, init_database, words
 from modules.enrichment_service import enrich_words, get_enrichment_summary
-
-st.set_page_config(page_title='词汇补全中心', page_icon='⚙️', layout='wide')
 init_database(); user_id, display_name = require_login()
 st.title('⚙️ 词汇补全中心')
 st.caption('补全的是公共词库字段，所有学习者都能看到补全后的音标/例句/翻译。')

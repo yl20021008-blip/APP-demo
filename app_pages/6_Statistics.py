@@ -4,8 +4,6 @@ import streamlit as st
 from sqlalchemy import select
 from modules.auth_ui import require_login
 from modules.database import get_connection, init_database, learning_status, review_logs, words
-
-st.set_page_config(page_title='学习统计', page_icon='📊', layout='wide')
 init_database(); user_id, display_name = require_login()
 st.title('📊 学习统计')
 with get_connection() as conn:

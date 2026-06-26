@@ -1,1 +1,1 @@
-1.2.1-cloud-user-hotfix
+1.2.2-no-auto-pages

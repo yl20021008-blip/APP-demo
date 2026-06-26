@@ -5,8 +5,6 @@ from modules.auth_ui import require_login
 from modules.database import init_database
 from modules.review_service import get_today_queue, submit_review
 from modules.settings_service import get_setting, set_setting
-
-st.set_page_config(page_title='今日学习', page_icon='🧠', layout='centered')
 init_database()
 user_id, display_name = require_login()
 st.title('🧠 今日学习')

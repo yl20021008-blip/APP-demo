@@ -4,8 +4,6 @@ import streamlit as st
 from modules.auth_ui import require_login
 from modules.database import init_database
 from modules.story_service import count_available_story_words, create_next_story, delete_story, get_next_story_words, get_story_detail, list_stories
-
-st.set_page_config(page_title='故事记忆', page_icon='📖', layout='wide')
 init_database(); user_id, display_name = require_login()
 st.title('📖 故事记忆')
 st.caption('故事是每个学习者独立保存的。')

@@ -4,8 +4,6 @@ import streamlit as st
 from sqlalchemy import select
 from modules.auth_ui import require_login
 from modules.database import get_connection, init_database, ensure_user_word_status, learning_status, words
-
-st.set_page_config(page_title='我的词库', page_icon='📚', layout='wide')
 init_database()
 user_id, display_name = require_login()
 ensure_user_word_status(user_id)

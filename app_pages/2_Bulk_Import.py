@@ -4,8 +4,6 @@ import streamlit as st
 from modules.auth_ui import require_login
 from modules.database import init_database
 from modules.importer import import_words, infer_chapter_from_filename, read_uploaded_file
-
-st.set_page_config(page_title='批量导入词库', page_icon='📂', layout='wide')
 init_database()
 user_id, display_name = require_login()
 st.title('📂 批量导入词库')
