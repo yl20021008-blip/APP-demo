@@ -1,9 +1,16 @@
-这版部署时请注意：
+v1.3 部署前必读
 
-1. 建议删除旧仓库里的 pages 文件夹。
-2. 复制本文件夹所有内容到 GitHub 本地仓库。
-3. Commit + Push。
-4. Streamlit Cloud 里把 Main file path 改成：
+1. 如果旧仓库里还有 pages 文件夹，继续删除。
+2. 本版本主入口仍然是：
    main_app/app.py
 
-如果继续填 app.py，并且旧 pages 文件夹还在，可能仍然会报 Streamlit 页面导航错误。
+3. 上传 GitHub 后，在 Streamlit Cloud 中确认：
+   Repository: 你的仓库
+   Branch: main
+   Main file path: main_app/app.py
+
+4. Secrets 中确认有：
+   DATABASE_URL = "你的 Supabase 连接字符串"
+   APP_MODE = "cloud"
+
+5. 更新后建议 Reboot app。

@@ -1,6 +1,6 @@
-# IELTS Vocabulary Planner v1.2.2
+# IELTS Vocabulary Planner v1.3
 
-这是 v1.2.2 云端保存 + 用户区分热修复版。
+这是 v1.3 云端保存 + 用户区分 + 故事优化 + 例句自动补充版。
 
 ## 重要部署设置
 
@@ -9,27 +9,6 @@ Streamlit Cloud 的 Main file path 请填写：
 ```text
 main_app/app.py
 ```
-
-不是：
-
-```text
-app.py
-```
-
-这样可以绕开 Streamlit Cloud 自动扫描根目录 `pages/` 目录时出现的页面导航报错。
-
-## 上传 GitHub 前建议
-
-如果你的旧仓库里已经有 `pages/` 文件夹，建议在本地仓库里删除它，再复制本版本文件。
-
-当前版本使用：
-
-```text
-app_pages/
-main_app/app.py
-```
-
-不再依赖 Streamlit 自动多页面系统。
 
 ## Streamlit Secrets
 
@@ -42,14 +21,41 @@ APP_MODE = "cloud"
 
 不要把 DATABASE_URL 放进 GitHub。
 
-## 功能
+## v1.3 新增重点
 
-- Supabase / PostgreSQL 云端保存
-- 学习者名称 + PIN
-- 公共词库共享
-- 每个人独立学习进度
-- 每个人独立复习计划
-- 每个人独立学习统计
-- 每个人独立故事记忆
-- 批量导入 Excel / CSV
-- 支持 phonetic / 音标字段导入
+### 故事记忆优化
+
+- 场景路线式故事；
+- 加粗目标词；
+- 中文释义线索；
+- 自动复习小测；
+- 每个用户独立保存故事。
+
+### 例句自动补充
+
+补全顺序：
+
+```text
+上传词库自带例句
+→ 词典 API 真实例句
+→ 本地生成雅思学习例句
+→ 自动翻译
+```
+
+如果词典查不到例句，系统会自动生成适合背词的英文句子，并标记来源：
+
+```text
+local_generated_ielts_example
+```
+
+## 仍然保留的功能
+
+- Supabase/PostgreSQL 云端保存；
+- 学习者名称 + PIN；
+- 公共词库共享；
+- 每个人独立学习进度；
+- 每个人独立复习计划；
+- 每个人独立学习统计；
+- 批量 Excel/CSV 导入；
+- phonetic 音标字段导入；
+- 自定义侧边栏导航。

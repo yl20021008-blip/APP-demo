@@ -1,1 +1,1 @@
-1.2.2-no-auto-pages
+1.3.0-story-example

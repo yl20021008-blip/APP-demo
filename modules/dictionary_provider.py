@@ -1,6 +1,6 @@
 from __future__ import annotations
 
-from dataclasses import asdict, dataclass
+from dataclasses import asdict, dataclass, field
 from typing import Any
 
 import requests
@@ -22,6 +22,7 @@ class DictionaryResult:
     uk_audio_url: str | None = None
     us_audio_url: str | None = None
     example_sentence: str | None = None
+    example_candidates: list[str] = field(default_factory=list)
     source: str = "dictionaryapi.dev"
 
     def to_dict(self) -> dict[str, Any]:
@@ -41,9 +42,7 @@ def _build_session() -> requests.Session:
         raise_on_status=False,
     )
     session.mount("https://", HTTPAdapter(max_retries=retry))
-    session.headers.update(
-        {"User-Agent": "IELTS-Vocabulary-Planner/0.3.1"}
-    )
+    session.headers.update({"User-Agent": "IELTS-Vocabulary-Planner/1.3"})
     return session
 
 
@@ -55,13 +54,42 @@ def _normalize_audio_url(url: str | None) -> str | None:
     return url
 
 
-def _first_example(entry: dict[str, Any]) -> str | None:
+def _collect_examples(entry: dict[str, Any], limit: int = 5) -> list[str]:
+    examples: list[str] = []
+    seen: set[str] = set()
     for meaning in entry.get("meanings") or []:
         for definition in meaning.get("definitions") or []:
             example = definition.get("example")
-            if isinstance(example, str) and example.strip():
-                return example.strip()
-    return None
+            if isinstance(example, str):
+                clean = " ".join(example.strip().split())
+                if clean and clean.lower() not in seen:
+                    examples.append(clean)
+                    seen.add(clean.lower())
+                    if len(examples) >= limit:
+                        return examples
+    return examples
+
+
+def _score_example(word: str, sentence: str) -> tuple[int, int]:
+    clean_word = word.lower()
+    clean_sentence = sentence.lower()
+    contains = 1 if clean_word in clean_sentence else 0
+    length = len(sentence)
+    # 背词例句不要过长也不要过短，优先 55-160 字符。
+    if 55 <= length <= 160:
+        length_score = 2
+    elif 30 <= length <= 220:
+        length_score = 1
+    else:
+        length_score = 0
+    return contains + length_score, -abs(length - 100)
+
+
+def _pick_best_example(word: str, examples: list[str]) -> str | None:
+    if not examples:
+        return None
+    ranked = sorted(examples, key=lambda sentence: _score_example(word, sentence), reverse=True)
+    return ranked[0]
 
 
 def lookup_word(word: str, timeout: float = 10.0) -> DictionaryResult:
@@ -72,19 +100,14 @@ def lookup_word(word: str, timeout: float = 10.0) -> DictionaryResult:
     session = _build_session()
 
     try:
-        response = session.get(
-            API_URL.format(word=clean_word),
-            timeout=timeout,
-        )
+        response = session.get(API_URL.format(word=clean_word), timeout=timeout)
     except requests.RequestException as exc:
         raise DictionaryLookupError(f"词典请求失败：{exc}") from exc
 
     if response.status_code == 404:
         raise DictionaryLookupError("词典没有找到该词。")
     if response.status_code != 200:
-        raise DictionaryLookupError(
-            f"词典返回 HTTP {response.status_code}。"
-        )
+        raise DictionaryLookupError(f"词典返回 HTTP {response.status_code}。")
 
     try:
         payload = response.json()
@@ -102,11 +125,9 @@ def lookup_word(word: str, timeout: float = 10.0) -> DictionaryResult:
     default_phonetic = entry.get("phonetic")
     phonetics = entry.get("phonetics") or []
 
-    # 先按音频文件名识别英式/美式，再用默认音标兜底。
     for item in phonetics:
         if not isinstance(item, dict):
             continue
-
         text = item.get("text")
         audio = _normalize_audio_url(item.get("audio"))
         audio_lower = (audio or "").lower()
@@ -121,7 +142,6 @@ def lookup_word(word: str, timeout: float = 10.0) -> DictionaryResult:
             result.us_phonetic = result.us_phonetic or text or default_phonetic
             result.us_audio_url = result.us_audio_url or audio
 
-    # 某些词只有一个音标或无法从音频名判断口音。
     all_texts = [
         item.get("text")
         for item in phonetics
@@ -131,6 +151,6 @@ def lookup_word(word: str, timeout: float = 10.0) -> DictionaryResult:
 
     result.uk_phonetic = result.uk_phonetic or fallback_text
     result.us_phonetic = result.us_phonetic or fallback_text
-    result.example_sentence = _first_example(entry)
-
+    result.example_candidates = _collect_examples(entry)
+    result.example_sentence = _pick_best_example(clean_word, result.example_candidates)
     return result
