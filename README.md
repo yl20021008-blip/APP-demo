@@ -1,52 +1,30 @@
-# IELTS Vocabulary Planner v1.4
+# IELTS Vocabulary Planner v1.5
 
-这是 v1.4 公共词库管理版。
+这是 v1.5 莫兰迪科研风 + 底部常用导航版。
 
-## 解决的问题
+## 结构调整
 
-之前所有用户都能上传、批量导入、补全公共词库，容易导致公共词库混乱。
-
-现在改成：
+### 底部常用导航
 
 ```text
-管理员维护公共词库
-普通学习者只学习、复习、生成自己的故事
+首页 / 今日学习 / 复习计划 / 故事记忆 / 学习统计
 ```
 
-## 新增页面
+### 左侧词库与管理
 
 ```text
-🛡️ 公共词库管理
+我的词库 / 上传词库 / 批量导入 / 词汇补全 / 公共词库管理
 ```
 
-管理员可以：
+## 色调
 
-- 一键导入预设词库；
-- 一键重置为预设词库；
-- 删除错误章节；
-- 清空公共词库；
-- 导出公共词库 Excel 备份；
-- 同步所有学习者学习状态；
-- 创建/修复常用索引。
+采用低饱和莫兰迪科研风：
 
-## 必须设置 Secrets
-
-在 Streamlit Cloud 的 Secrets 中加入：
-
-```toml
-APP_MODE = "cloud"
-DATABASE_URL = "postgresql+psycopg2://..."
-ADMIN_PIN = "你自己的管理员PIN"
-PUBLIC_WORDLIST_LOCKED = "true"
-```
-
-## 使用流程
-
-1. 管理员进入首页登录学习者账号；
-2. 进入 `🛡️ 公共词库管理`；
-3. 输入管理员 PIN；
-4. 一键导入或重置预设词库；
-5. 普通用户进入后直接学习，不再编辑公共词库。
+- 米灰背景；
+- 鼠尾草绿主色；
+- 低饱和棕灰；
+- 柔和卡片；
+- 更统一的字体与按钮。
 
 ## 部署入口
 
@@ -54,4 +32,13 @@ Streamlit Cloud 的 Main file path 必须是：
 
 ```text
 main_app/app.py
+```
+
+## Secrets
+
+```toml
+APP_MODE = "cloud"
+DATABASE_URL = "postgresql+psycopg2://..."
+ADMIN_PIN = "你自己的管理员PIN"
+PUBLIC_WORDLIST_LOCKED = "true"
 ```

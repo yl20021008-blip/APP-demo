@@ -6,7 +6,7 @@ import streamlit as st
 
 from modules.database import get_dashboard_metrics, get_database_mode
 
-APP_VERSION = "v1.4"
+APP_VERSION = "v1.5"
 
 
 def read_version() -> str:
@@ -17,143 +17,196 @@ def read_version() -> str:
 
 
 def apply_global_style() -> None:
-    """轻量美化，不引入额外依赖。"""
-    
-st.markdown(
+    """Morandi + research style global UI."""
+    st.markdown(
         """
         <style>
         :root {
             --ielts-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
                           "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
                           "Helvetica Neue", Arial, sans-serif;
-            --ielts-text: #1f2937;
-            --ielts-muted: #667085;
-            --ielts-border: #e7edf5;
-            --ielts-soft-bg: #f8fbff;
-            --ielts-card-bg: #ffffff;
-            --ielts-primary: #2f6fed;
+
+            /* Morandi research palette */
+            --bg: #F4F2EC;
+            --surface: #FBFAF6;
+            --surface-2: #F0EEE7;
+            --surface-3: #E8E4DA;
+            --text: #30363A;
+            --muted: #717A7E;
+            --border: #DCD7CC;
+            --border-2: #CFC8BC;
+            --primary: #6F847D;
+            --primary-2: #8FA29A;
+            --primary-soft: #DDE6E1;
+            --accent: #A99786;
+            --accent-soft: #E7DED4;
+            --blue-gray: #778899;
+            --warning: #A8895E;
+            --danger: #B17870;
+            --success: #6F847D;
         }
 
         html, body, [class*="css"], .stApp, button, input, textarea, select {
             font-family: var(--ielts-font) !important;
-            color: var(--ielts-text);
+            color: var(--text);
+        }
+
+        .stApp {
+            background:
+              radial-gradient(circle at 12% 10%, rgba(221,230,225,0.60) 0, rgba(221,230,225,0) 28%),
+              linear-gradient(180deg, #F7F5EF 0%, var(--bg) 100%);
         }
 
         .block-container {
-            padding-top: 2.0rem;
-            padding-bottom: 4rem;
+            padding-top: 1.6rem;
+            padding-bottom: 7.0rem;
             max-width: 1180px;
         }
 
         h1 {
             letter-spacing: -0.035em;
-            font-weight: 750 !important;
-            line-height: 1.16 !important;
-            margin-bottom: 0.35rem !important;
+            font-weight: 760 !important;
+            line-height: 1.14 !important;
+            margin-bottom: 0.40rem !important;
+            color: #2E3437;
         }
 
         h2, h3 {
             letter-spacing: -0.02em;
-            font-weight: 700 !important;
+            font-weight: 720 !important;
+            color: #384044;
         }
 
         p, li, label, div[data-testid="stMarkdownContainer"] {
-            line-height: 1.68;
+            line-height: 1.70;
+        }
+
+        .ielts-page-title {
+            margin-bottom: 0.2rem;
         }
 
         div[data-testid="stMetric"] {
-            background: var(--ielts-card-bg);
-            border: 1px solid var(--ielts-border);
+            background: rgba(251,250,246,0.92);
+            border: 1px solid var(--border);
             padding: 14px 16px;
-            border-radius: 16px;
-            box-shadow: 0 1px 2px rgba(16,24,40,0.04);
+            border-radius: 18px;
+            box-shadow: 0 6px 18px rgba(48,54,58,0.045);
         }
 
         div[data-testid="stMetric"] label {
-            color: var(--ielts-muted) !important;
-            font-size: 0.86rem !important;
+            color: var(--muted) !important;
+            font-size: 0.84rem !important;
         }
 
         div[data-testid="stMetricValue"] {
-            font-size: 1.58rem !important;
-            font-weight: 720 !important;
+            font-size: 1.48rem !important;
+            font-weight: 740 !important;
             letter-spacing: -0.02em;
+            color: #2F383A;
         }
 
         section[data-testid="stSidebar"] {
-            border-right: 1px solid var(--ielts-border);
-            background: #f7f9fc;
+            border-right: 1px solid var(--border);
+            background: rgba(240,238,231,0.96);
         }
 
         section[data-testid="stSidebar"] * {
-            font-size: 0.95rem;
-        }
-
-        div[role="radiogroup"] label {
-            padding: 4px 0;
-        }
-
-        .stButton > button {
-            border-radius: 12px !important;
-            font-weight: 650 !important;
-            border: 1px solid #d9e2ef !important;
-            min-height: 40px;
-        }
-
-        .stButton > button[kind="primary"] {
-            background: var(--ielts-primary) !important;
-            border-color: var(--ielts-primary) !important;
-        }
-
-        .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
-            border-radius: 12px !important;
-        }
-
-        .stDataFrame {
-            border-radius: 14px;
-            overflow: hidden;
-        }
-
-        .ielts-status-card {
-            padding: 14px 16px;
-            border: 1px solid #e8eef8;
-            background: var(--ielts-soft-bg);
-            border-radius: 14px;
-            margin: 8px 0 14px 0;
-            line-height: 1.65;
             font-size: 0.94rem;
         }
 
+        section[data-testid="stSidebar"] .stButton > button {
+            justify-content: flex-start;
+            text-align: left;
+            background: rgba(251,250,246,0.70);
+            border: 1px solid var(--border) !important;
+            color: #3E4649;
+            min-height: 38px;
+        }
+
+        section[data-testid="stSidebar"] .stButton > button:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-2) !important;
+            color: #253432;
+        }
+
+        .stButton > button {
+            border-radius: 14px !important;
+            font-weight: 650 !important;
+            border: 1px solid var(--border) !important;
+            min-height: 40px;
+            background: var(--surface);
+            color: var(--text);
+        }
+
+        .stButton > button[kind="primary"] {
+            background: var(--primary) !important;
+            border-color: var(--primary) !important;
+            color: #FFFFFF !important;
+        }
+
+        .stButton > button:hover {
+            border-color: var(--primary-2) !important;
+            box-shadow: 0 4px 14px rgba(111,132,125,0.14);
+        }
+
+        .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+            border-radius: 14px !important;
+            background: rgba(251,250,246,0.96) !important;
+            border-color: var(--border) !important;
+        }
+
+        .stDataFrame {
+            border-radius: 16px;
+            overflow: hidden;
+            border: 1px solid var(--border);
+        }
+
+        div[data-testid="stAlert"] {
+            border-radius: 16px;
+            border: 1px solid rgba(207,200,188,0.86);
+        }
+
+        .ielts-status-card {
+            padding: 13px 16px;
+            border: 1px solid var(--border);
+            background: rgba(251,250,246,0.82);
+            border-radius: 16px;
+            margin: 8px 0 14px 0;
+            line-height: 1.65;
+            font-size: 0.93rem;
+            box-shadow: 0 4px 14px rgba(48,54,58,0.035);
+        }
+
         .ielts-ok {
-            color: #0f7b4f;
-            font-weight: 650;
+            color: #526E67;
+            font-weight: 700;
         }
 
         .ielts-warn {
-            color: #a15c00;
-            font-weight: 650;
+            color: #8B6E45;
+            font-weight: 700;
         }
 
         .ielts-muted {
-            color: var(--ielts-muted);
+            color: var(--muted);
             font-size: 0.92rem;
         }
 
         .ielts-step {
             padding: 12px 14px;
-            border: 1px solid var(--ielts-border);
-            border-radius: 14px;
-            background: var(--ielts-card-bg);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            background: rgba(251,250,246,0.90);
             margin-bottom: 10px;
             line-height: 1.7;
         }
 
         .word-card {
             padding: 30px 28px;
-            border: 1px solid var(--ielts-border);
-            border-radius: 20px;
-            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
-            box-shadow: 0 2px 10px rgba(16,24,40,0.04);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            background: linear-gradient(180deg, rgba(251,250,246,0.98) 0%, rgba(240,238,231,0.86) 100%);
+            box-shadow: 0 10px 26px rgba(48,54,58,0.055);
             text-align: center;
             margin: 12px 0 18px 0;
         }
@@ -163,18 +216,89 @@ st.markdown(
             font-weight: 780;
             letter-spacing: -0.025em;
             line-height: 1.1;
+            color: #2E3437;
         }
 
         .word-card .pos {
-            color: var(--ielts-muted);
+            color: var(--muted);
             font-size: 17px;
             margin-top: 10px;
+        }
+
+        /* Fixed bottom nav */
+        .bottom-nav-wrap {
+            position: fixed;
+            left: 50%;
+            bottom: 18px;
+            transform: translateX(-50%);
+            width: min(780px, calc(100vw - 36px));
+            background: rgba(251,250,246,0.94);
+            border: 1px solid rgba(207,200,188,0.88);
+            box-shadow: 0 14px 38px rgba(48,54,58,0.16);
+            border-radius: 24px;
+            z-index: 999999;
+            padding: 8px;
+            backdrop-filter: blur(16px);
+        }
+
+        .bottom-nav {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 6px;
+        }
+
+        .bottom-nav a {
+            text-decoration: none !important;
+            color: #4C5558 !important;
+            padding: 10px 8px;
+            border-radius: 18px;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 650;
+            line-height: 1.2;
+            transition: all 0.18s ease;
+            border: 1px solid transparent;
+        }
+
+        .bottom-nav a:hover {
+            background: var(--primary-soft);
+            border-color: var(--primary-2);
+            color: #263532 !important;
+        }
+
+        .bottom-nav a.active {
+            background: var(--primary);
+            color: #FFFFFF !important;
+            box-shadow: 0 6px 16px rgba(111,132,125,0.25);
+        }
+
+        .bottom-nav .nav-icon {
+            display: block;
+            font-size: 18px;
+            margin-bottom: 3px;
+        }
+
+        @media (max-width: 760px) {
+            .bottom-nav-wrap {
+                bottom: 10px;
+                width: calc(100vw - 20px);
+                border-radius: 20px;
+            }
+            .bottom-nav a {
+                font-size: 11px;
+                padding: 8px 4px;
+            }
+            .bottom-nav .nav-icon {
+                font-size: 17px;
+            }
+            .word-card .word {
+                font-size: 36px;
+            }
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
-
 
 
 def render_top_status(user_id: int | None, display_name: str | None) -> None:
@@ -251,8 +375,8 @@ def render_next_steps(user_id: int | None) -> None:
         st.markdown(
             """
             <div class="ielts-step">① 先创建或登录学习者：输入名称和4位以上 PIN。</div>
-            <div class="ielts-step">② 登录后进入“批量导入词库”，上传全量或章节 Excel。</div>
-            <div class="ielts-step">③ 导入后进入“今日学习”，系统会自动生成你的个人进度。</div>
+            <div class="ielts-step">② 登录后从底部导航进入“今日学习”。</div>
+            <div class="ielts-step">③ 管理员在左侧“公共词库管理”统一维护预设词库。</div>
             """,
             unsafe_allow_html=True,
         )
@@ -260,17 +384,45 @@ def render_next_steps(user_id: int | None) -> None:
 
     metrics = get_dashboard_metrics(int(user_id))
     if metrics["total_words"] == 0:
-        st.info("现在还没有公共词库。请进入“批量导入词库”上传 Excel。")
+        st.info("现在还没有公共词库。管理员请从左侧进入“公共词库管理”导入预设词库。")
     elif metrics["new_words"] > 0:
-        st.success("词库已经准备好。建议进入“今日学习”开始第一组单词。")
+        st.success("词库已经准备好。建议从底部导航进入“今日学习”。")
     elif metrics["due_reviews"] > 0:
-        st.warning("今天有到期复习。建议先完成复习，再学新词。")
+        st.warning("今天有到期复习。建议先从底部导航进入“复习计划”或“今日学习”。")
     else:
-        st.success("今天暂时没有到期任务。可以去“词汇补全中心”补例句，或去“故事记忆”生成故事。")
+        st.success("今天暂时没有到期任务。可以进入“故事记忆”或查看“学习统计”。")
+
+
+def render_bottom_nav(active_slug: str) -> None:
+    items = [
+        ("home", "🏠", "首页"),
+        ("today", "🧠", "学习"),
+        ("review", "🗓️", "复习"),
+        ("story", "📖", "故事"),
+        ("stats", "📊", "统计"),
+    ]
+
+    links = []
+    for slug, icon, label in items:
+        active = "active" if slug == active_slug else ""
+        links.append(
+            f'<a class="{active}" href="?page={slug}"><span class="nav-icon">{icon}</span>{label}</a>'
+        )
+
+    st.markdown(
+        f"""
+        <div class="bottom-nav-wrap">
+            <div class="bottom-nav">
+                {''.join(links)}
+            </div>
+        </div>
+        """,
+        unsafe_allow_html=True,
+    )
 
 
 def render_page_header(title: str, caption: str | None = None) -> None:
-    st.title(title)
+    st.markdown(f'<div class="ielts-page-title"><h1>{title}</h1></div>', unsafe_allow_html=True)
     if caption:
         st.caption(caption)
 

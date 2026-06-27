@@ -14,6 +14,7 @@ from modules.auth_ui import render_login_box
 from modules.database import init_database
 from modules.ui_status import (
     apply_global_style,
+    render_bottom_nav,
     render_dashboard_cards,
     render_next_steps,
     render_sidebar_status,
@@ -30,36 +31,66 @@ st.set_page_config(
 apply_global_style()
 init_database()
 
-PAGE_MAP = {
-    "🏠 首页 / 登录": None,
-    "📥 上传词库": "1_Upload_Wordlist.py",
-    "📂 批量导入词库": "2_Bulk_Import.py",
-    "📚 我的词库": "3_My_Wordbook.py",
-    "🧠 今日学习": "4_Today_Study.py",
-    "🗓️ 复习计划": "5_Review_Plan.py",
-    "📊 学习统计": "6_Statistics.py",
-    "⚙️ 词汇补全中心": "7_Enrichment.py",
-    "📖 故事记忆": "8_Story_Memory.py",
-    "🛡️ 公共词库管理": "9_Admin_Public_Wordbook.py",
+COMMON_PAGES = {
+    "home": ("🏠 首页", None),
+    "today": ("🧠 今日学习", "4_Today_Study.py"),
+    "review": ("🗓️ 复习计划", "5_Review_Plan.py"),
+    "story": ("📖 故事记忆", "8_Story_Memory.py"),
+    "stats": ("📊 学习统计", "6_Statistics.py"),
 }
 
-st.sidebar.title("📘 IELTS Planner")
-selected_page = st.sidebar.radio("功能导航", list(PAGE_MAP.keys()), index=0)
+SIDE_PAGES = {
+    "wordbook": ("📚 我的词库", "3_My_Wordbook.py"),
+    "upload": ("📥 上传词库", "1_Upload_Wordlist.py"),
+    "bulk": ("📂 批量导入词库", "2_Bulk_Import.py"),
+    "enrichment": ("⚙️ 词汇补全中心", "7_Enrichment.py"),
+    "admin": ("🛡️ 公共词库管理", "9_Admin_Public_Wordbook.py"),
+}
+
+ALL_PAGES = {**COMMON_PAGES, **SIDE_PAGES}
+
+# Query param routing
+try:
+    current_page = st.query_params.get("page", "home")
+except Exception:
+    current_page = "home"
+
+if current_page not in ALL_PAGES:
+    current_page = "home"
 
 user_id = st.session_state.get("user_id")
 display_name = st.session_state.get("display_name")
 
+st.sidebar.title("📘 IELTS Planner")
+st.sidebar.caption("常用功能已移到底部导航。")
+
+with st.sidebar.expander("📚 词库与管理", expanded=False):
+    for slug in ["wordbook", "upload", "bulk", "enrichment", "admin"]:
+        label, _ = SIDE_PAGES[slug]
+        prefix = "● " if current_page == slug else ""
+        if st.button(prefix + label, key=f"side_{slug}", use_container_width=True):
+            st.query_params["page"] = slug
+            st.rerun()
+
+with st.sidebar.expander("🧭 常用功能", expanded=False):
+    for slug, (label, _) in COMMON_PAGES.items():
+        prefix = "● " if current_page == slug else ""
+        if st.button(prefix + label, key=f"common_{slug}", use_container_width=True):
+            st.query_params["page"] = slug
+            st.rerun()
+
 render_sidebar_status(user_id, display_name)
 
-page_file = PAGE_MAP[selected_page]
+page_title, page_file = ALL_PAGES[current_page]
 
 if page_file is not None:
-    st.markdown(f"### {selected_page}")
+    st.markdown(f"### {page_title}")
     render_top_status(user_id, display_name)
 
     page_path = ROOT / "app_pages" / page_file
     if not page_path.exists():
         st.error(f"页面文件不存在：{page_path}")
+        render_bottom_nav(current_page if current_page in COMMON_PAGES else "home")
         st.stop()
 
     try:
@@ -68,11 +99,13 @@ if page_file is not None:
         st.error("当前页面运行时出现错误。")
         st.exception(exc)
         st.info("如果是刚更新代码后出现的问题，请先 Reboot app；如果仍然存在，把这个错误截图发给开发者。")
+
+    render_bottom_nav(current_page if current_page in COMMON_PAGES else "home")
     st.stop()
 
 # Home page
 st.title("📘 IELTS Vocabulary Planner")
-st.caption("v1.4 公共词库管理版：管理员预设公共词库，普通学习者只学习不编辑。")
+st.caption("v1.5 莫兰迪科研风导航版：常用功能在底部切换，词库与管理功能收纳到左侧。")
 render_top_status(user_id, display_name)
 
 if not user_id:
@@ -90,18 +123,17 @@ render_next_steps(user_id)
 with st.expander("使用说明", expanded=False):
     st.markdown(
         """
-        **推荐流程：**
+        **新的页面结构：**
 
-        1. 首页创建或登录学习者；
-        2. 批量导入词库；
-        3. 进入今日学习开始背词；
-        4. 进入词汇补全中心补音标、例句和翻译；
-        5. 学完一组后进入故事记忆生成复习故事。
+        - 底部导航：首页、今日学习、复习计划、故事记忆、学习统计。
+        - 左侧栏：我的词库、上传词库、批量导入、词汇补全、公共词库管理。
 
-        **性能建议：**
+        **建议使用方式：**
 
-        - 词汇补全每批先处理 10 个；
-        - 自动翻译先关闭，等英文例句补完后再小批量翻译；
-        - 大词库查看请使用“我的词库”的分页功能。
+        1. 管理员先从左侧进入“公共词库管理”，预设公共词库；
+        2. 普通学习者主要使用底部导航；
+        3. 词库维护类操作统一收纳在左侧，减少误操作。
         """
     )
+
+render_bottom_nav("home")
