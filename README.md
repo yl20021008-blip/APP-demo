@@ -1,33 +1,45 @@
-# IELTS Vocabulary Planner v1.3.3
+# IELTS Vocabulary Planner v1.3.4
 
-这是 v1.3.3 页面状态优化版。
+这是 v1.3.4 字体协调 + 单词读音恢复版。
 
-## 主要优化
+## 本版重点
 
-- 顶部状态栏：当前学习者、数据库状态、版本号；
-- 侧边栏状态：登录状态、数据库模式、刷新按钮；
-- 首页根据当前状态自动提示下一步；
-- 页面出错时更容易截图排查；
-- 关键页面增加操作影响说明。
+### 字体协调
+
+统一全局字体、标题、按钮、侧边栏、指标卡片和学习卡片样式。
+
+### 读音恢复
+
+今日学习页现在有两级读音：
+
+```text
+词典真实音频
+→ 如果没有音频 URL，则使用浏览器 TTS 朗读
+```
+
+所以即使词库里只有 phonetic 音标，也可以点击播放英式/美式读音。
+
+## 补音频
+
+进入：
+
+```text
+词汇补全中心
+```
+
+每批 10 个处理，系统会尝试补全：
+
+```text
+音标
+英式/美式音频
+例句
+翻译
+```
 
 ## 部署入口
 
-Streamlit Cloud 的 Main file path 必须填写：
+Streamlit Cloud 的 Main file path 必须是：
 
 ```text
 main_app/app.py
 ```
-
-## Secrets
-
-```toml
-APP_MODE = "cloud"
-DATABASE_URL = "postgresql+psycopg2://postgres.xxxxx:你的密码@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
-```
-
-## 使用建议
-
-- 词库导入后先进入“今日学习”测试；
-- 词汇补全每批 10 个；
-- 自动翻译先关闭；
-- 大词库查看使用分页。

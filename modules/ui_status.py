@@ -18,55 +18,163 @@ def read_version() -> str:
 
 def apply_global_style() -> None:
     """轻量美化，不引入额外依赖。"""
-    st.markdown(
+    
+st.markdown(
         """
         <style>
+        :root {
+            --ielts-font: -apple-system, BlinkMacSystemFont, "Segoe UI", "Inter",
+                          "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC",
+                          "Helvetica Neue", Arial, sans-serif;
+            --ielts-text: #1f2937;
+            --ielts-muted: #667085;
+            --ielts-border: #e7edf5;
+            --ielts-soft-bg: #f8fbff;
+            --ielts-card-bg: #ffffff;
+            --ielts-primary: #2f6fed;
+        }
+
+        html, body, [class*="css"], .stApp, button, input, textarea, select {
+            font-family: var(--ielts-font) !important;
+            color: var(--ielts-text);
+        }
+
         .block-container {
             padding-top: 2.0rem;
             padding-bottom: 4rem;
             max-width: 1180px;
         }
+
+        h1 {
+            letter-spacing: -0.035em;
+            font-weight: 750 !important;
+            line-height: 1.16 !important;
+            margin-bottom: 0.35rem !important;
+        }
+
+        h2, h3 {
+            letter-spacing: -0.02em;
+            font-weight: 700 !important;
+        }
+
+        p, li, label, div[data-testid="stMarkdownContainer"] {
+            line-height: 1.68;
+        }
+
         div[data-testid="stMetric"] {
-            background: #ffffff;
-            border: 1px solid #edf0f5;
+            background: var(--ielts-card-bg);
+            border: 1px solid var(--ielts-border);
             padding: 14px 16px;
             border-radius: 16px;
-            box-shadow: 0 1px 2px rgba(0,0,0,0.03);
+            box-shadow: 0 1px 2px rgba(16,24,40,0.04);
         }
+
+        div[data-testid="stMetric"] label {
+            color: var(--ielts-muted) !important;
+            font-size: 0.86rem !important;
+        }
+
+        div[data-testid="stMetricValue"] {
+            font-size: 1.58rem !important;
+            font-weight: 720 !important;
+            letter-spacing: -0.02em;
+        }
+
         section[data-testid="stSidebar"] {
-            border-right: 1px solid #edf0f5;
+            border-right: 1px solid var(--ielts-border);
+            background: #f7f9fc;
         }
+
+        section[data-testid="stSidebar"] * {
+            font-size: 0.95rem;
+        }
+
+        div[role="radiogroup"] label {
+            padding: 4px 0;
+        }
+
+        .stButton > button {
+            border-radius: 12px !important;
+            font-weight: 650 !important;
+            border: 1px solid #d9e2ef !important;
+            min-height: 40px;
+        }
+
+        .stButton > button[kind="primary"] {
+            background: var(--ielts-primary) !important;
+            border-color: var(--ielts-primary) !important;
+        }
+
+        .stTextInput input, .stNumberInput input, .stSelectbox div[data-baseweb="select"] {
+            border-radius: 12px !important;
+        }
+
+        .stDataFrame {
+            border-radius: 14px;
+            overflow: hidden;
+        }
+
         .ielts-status-card {
             padding: 14px 16px;
             border: 1px solid #e8eef8;
-            background: #f8fbff;
+            background: var(--ielts-soft-bg);
             border-radius: 14px;
             margin: 8px 0 14px 0;
             line-height: 1.65;
+            font-size: 0.94rem;
         }
+
         .ielts-ok {
             color: #0f7b4f;
             font-weight: 650;
         }
+
         .ielts-warn {
             color: #a15c00;
             font-weight: 650;
         }
+
         .ielts-muted {
-            color: #667085;
+            color: var(--ielts-muted);
             font-size: 0.92rem;
         }
+
         .ielts-step {
             padding: 12px 14px;
-            border: 1px solid #edf0f5;
+            border: 1px solid var(--ielts-border);
             border-radius: 14px;
-            background: #ffffff;
+            background: var(--ielts-card-bg);
             margin-bottom: 10px;
+            line-height: 1.7;
+        }
+
+        .word-card {
+            padding: 30px 28px;
+            border: 1px solid var(--ielts-border);
+            border-radius: 20px;
+            background: linear-gradient(180deg, #ffffff 0%, #fbfdff 100%);
+            box-shadow: 0 2px 10px rgba(16,24,40,0.04);
+            text-align: center;
+            margin: 12px 0 18px 0;
+        }
+
+        .word-card .word {
+            font-size: 46px;
+            font-weight: 780;
+            letter-spacing: -0.025em;
+            line-height: 1.1;
+        }
+
+        .word-card .pos {
+            color: var(--ielts-muted);
+            font-size: 17px;
+            margin-top: 10px;
         }
         </style>
         """,
         unsafe_allow_html=True,
     )
+
 
 
 def render_top_status(user_id: int | None, display_name: str | None) -> None:

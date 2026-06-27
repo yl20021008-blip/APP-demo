@@ -13,7 +13,7 @@ user_id, display_name = require_login()
 
 st.title("⚙️ 词汇补全中心")
 st.warning("性能提示：补全中心最耗时，建议每批10个，先关闭自动翻译。")
-st.caption("v1.3.1 性能优化：默认小批量处理，历史记录只显示最近50条。")
+st.caption("v1.3.4 优化：会补回词典音频；如果没有音频，今日学习页也提供浏览器朗读兜底。")
 
 with get_connection() as conn:
     chapter_rows = conn.execute(select(words.c.chapter).distinct().order_by(words.c.chapter)).all()
@@ -22,13 +22,14 @@ chapters = [row[0] for row in chapter_rows]
 selected_chapter = st.selectbox("选择章节", options=["全部"] + chapters)
 
 summary = get_enrichment_summary(selected_chapter)
-col1, col2, col3, col4, col5, col6 = st.columns(6)
+col1, col2, col3, col4, col5, col6, col7 = st.columns(7)
 col1.metric("词数", summary["total"])
 col2.metric("缺少音标", summary["missing_phonetic"])
-col3.metric("缺少例句", summary["missing_example"])
-col4.metric("缺少翻译", summary["missing_translation"])
-col5.metric("生成例句", summary.get("generated_examples", 0))
-col6.metric("失败记录", summary["failed"])
+col3.metric("缺少音频", summary.get("missing_audio", 0))
+col4.metric("缺少例句", summary["missing_example"])
+col5.metric("缺少翻译", summary["missing_translation"])
+col6.metric("生成例句", summary.get("generated_examples", 0))
+col7.metric("失败", summary["failed"])
 
 st.divider()
 

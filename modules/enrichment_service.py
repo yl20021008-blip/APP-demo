@@ -31,6 +31,7 @@ def get_enrichment_summary(chapter: str | None = None) -> dict[str, int]:
     stmt = select(
         func.count(words.c.id).label("total"),
         func.sum(case((and_(_blank(words.c.uk_phonetic), _blank(words.c.us_phonetic)), 1), else_=0)).label("missing_phonetic"),
+        func.sum(case((and_(_blank(words.c.uk_audio_url), _blank(words.c.us_audio_url)), 1), else_=0)).label("missing_audio"),
         func.sum(case((_blank(words.c.example_sentence), 1), else_=0)).label("missing_example"),
         func.sum(case((and_(_not_blank(words.c.example_sentence), _blank(words.c.example_translation)), 1), else_=0)).label("missing_translation"),
         func.sum(case((words.c.example_source.like("local_generated%"), 1), else_=0)).label("generated_examples"),
@@ -46,6 +47,7 @@ def get_enrichment_summary(chapter: str | None = None) -> dict[str, int]:
     return {
         "total": int(row.get("total") or 0),
         "missing_phonetic": int(row.get("missing_phonetic") or 0),
+        "missing_audio": int(row.get("missing_audio") or 0),
         "missing_example": int(row.get("missing_example") or 0),
         "missing_translation": int(row.get("missing_translation") or 0),
         "generated_examples": int(row.get("generated_examples") or 0),
@@ -115,6 +117,8 @@ def _select_words(chapter: str | None, limit: int, retry_failed: bool, force_ove
             or_(
                 _blank(words.c.uk_phonetic),
                 _blank(words.c.us_phonetic),
+                _blank(words.c.uk_audio_url),
+                _blank(words.c.us_audio_url),
                 _blank(words.c.example_sentence),
                 and_(_not_blank(words.c.example_sentence), _blank(words.c.example_translation)),
                 words.c.enrichment_status.in_(["pending", "partial"]),

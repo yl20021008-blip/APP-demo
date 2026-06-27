@@ -1,6 +1,8 @@
 from __future__ import annotations
 import html
 import streamlit as st
+
+from modules.audio_ui import render_pronunciation_controls
 from modules.auth_ui import require_login
 from modules.database import init_database
 from modules.review_service import get_today_queue, submit_review
