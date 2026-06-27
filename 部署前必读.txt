@@ -1,16 +1,21 @@
-v1.3 部署前必读
+v1.3.1 性能优化版部署前必读
 
-1. 如果旧仓库里还有 pages 文件夹，继续删除。
-2. 本版本主入口仍然是：
+1. Main file path 仍然是：
    main_app/app.py
 
-3. 上传 GitHub 后，在 Streamlit Cloud 中确认：
-   Repository: 你的仓库
-   Branch: main
-   Main file path: main_app/app.py
+2. 如果旧仓库里还有 pages 文件夹，继续删除。
 
-4. Secrets 中确认有：
-   DATABASE_URL = "你的 Supabase 连接字符串"
+3. 上传 GitHub 后：
+   Commit to main
+   Push origin
+
+4. Streamlit Cloud 里：
+   Manage app → Reboot app
+
+5. Secrets 保持：
    APP_MODE = "cloud"
+   DATABASE_URL = "postgresql+psycopg2://...?...sslmode=require"
 
-5. 更新后建议 Reboot app。
+6. 补全中心建议：
+   每批 10 个
+   先关闭自动翻译

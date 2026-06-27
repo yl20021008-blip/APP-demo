@@ -1,8 +1,8 @@
-# IELTS Vocabulary Planner v1.3
+# IELTS Vocabulary Planner v1.3.1 Performance
 
-这是 v1.3 云端保存 + 用户区分 + 故事优化 + 例句自动补充版。
+这是 v1.3.1 性能优化版。
 
-## 重要部署设置
+## 部署入口
 
 Streamlit Cloud 的 Main file path 请填写：
 
@@ -10,52 +10,42 @@ Streamlit Cloud 的 Main file path 请填写：
 main_app/app.py
 ```
 
-## Streamlit Secrets
-
-在 Streamlit Cloud 里设置：
+## Secrets
 
 ```toml
-DATABASE_URL = "你的 Supabase PostgreSQL 连接字符串"
 APP_MODE = "cloud"
+DATABASE_URL = "postgresql+psycopg2://postgres.xxxxx:你的密码@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
 ```
 
-不要把 DATABASE_URL 放进 GitHub。
+## 本版优化重点
 
-## v1.3 新增重点
+- 数据库连接池；
+- 数据库初始化缓存；
+- 自动创建查询索引；
+- 用户学习状态同步加速；
+- 我的词库分页显示；
+- 学习统计数据库聚合；
+- 补全中心默认小批量；
+- 关闭默认自动翻译；
+- 导入和预览防卡顿。
 
-### 故事记忆优化
+## 建议使用方式
 
-- 场景路线式故事；
-- 加粗目标词；
-- 中文释义线索；
-- 自动复习小测；
-- 每个用户独立保存故事。
+### 导入词库
 
-### 例句自动补充
+可以导入全量 Excel，但页面只预览前200行。
 
-补全顺序：
+### 补全例句
+
+建议先这样设置：
 
 ```text
-上传词库自带例句
-→ 词典 API 真实例句
-→ 本地生成雅思学习例句
-→ 自动翻译
+每批处理数量：10
+自动翻译英文例句：关闭
 ```
 
-如果词典查不到例句，系统会自动生成适合背词的英文句子，并标记来源：
+等英文例句补得差不多后，再打开翻译小批量补。
 
-```text
-local_generated_ielts_example
-```
+### 词库查看
 
-## 仍然保留的功能
-
-- Supabase/PostgreSQL 云端保存；
-- 学习者名称 + PIN；
-- 公共词库共享；
-- 每个人独立学习进度；
-- 每个人独立复习计划；
-- 每个人独立学习统计；
-- 批量 Excel/CSV 导入；
-- phonetic 音标字段导入；
-- 自定义侧边栏导航。
+“我的词库”已分页，几千词也不会一次性加载。

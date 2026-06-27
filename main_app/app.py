@@ -58,7 +58,7 @@ if page_file is not None:
 
 # Home page
 st.title("📘 IELTS Vocabulary Planner")
-st.caption("v1.2.2 云端保存 + 学习者区分版：公共词库共享，每个人的学习进度独立保存。")
+st.caption("v1.3.1 性能优化版：云端保存、用户区分、分页词库、数据库连接池优化。")
 
 if not user_id:
     st.info("请先登录或创建学习者。第一次使用只需要输入一个名称和4位以上 PIN。")
@@ -90,7 +90,4 @@ st.markdown(
 '''
 )
 
-st.warning(
-    "这版使用自定义侧边栏导航，并把主文件放在 main_app/app.py，"
-    "用于绕开 Streamlit Cloud 对根目录 pages/ 自动扫描导致的页面导航报错。"
-)
+st.info("性能优化已启用：数据库连接池、初始化缓存、词库分页、SQL聚合统计、小批量补全。")
