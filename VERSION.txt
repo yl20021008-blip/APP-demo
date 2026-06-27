@@ -1,1 +1,1 @@
-1.3.4-font-audio
+1.4.0-admin-public-wordbook

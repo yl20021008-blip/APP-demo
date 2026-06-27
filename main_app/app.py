@@ -40,6 +40,7 @@ PAGE_MAP = {
     "📊 学习统计": "6_Statistics.py",
     "⚙️ 词汇补全中心": "7_Enrichment.py",
     "📖 故事记忆": "8_Story_Memory.py",
+    "🛡️ 公共词库管理": "9_Admin_Public_Wordbook.py",
 }
 
 st.sidebar.title("📘 IELTS Planner")
@@ -71,7 +72,7 @@ if page_file is not None:
 
 # Home page
 st.title("📘 IELTS Vocabulary Planner")
-st.caption("v1.3.3 页面状态优化版：更清楚的登录状态、数据库状态、操作引导和刷新按钮。")
+st.caption("v1.4 公共词库管理版：管理员预设公共词库，普通学习者只学习不编辑。")
 render_top_status(user_id, display_name)
 
 if not user_id:

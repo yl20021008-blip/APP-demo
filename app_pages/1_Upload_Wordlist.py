@@ -3,11 +3,18 @@ from __future__ import annotations
 import streamlit as st
 
 from modules.auth_ui import require_login
+from modules.admin_service import require_admin_for_public_write
 from modules.database import init_database
 from modules.importer import import_words, read_uploaded_file
 
 init_database()
 user_id, display_name = require_login()
+
+can_write_public = require_admin_for_public_write("上传公共词库")
+if not can_write_public:
+    st.info("公共词库由管理员统一维护。你可以去“我的词库”和“今日学习”使用已预设的词库。")
+    st.stop()
+
 
 st.title("📥 上传词库")
 st.info("状态：上传后会写入公共词库；当前学习者会自动同步学习进度。")

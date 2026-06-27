@@ -1,4 +1,4 @@
-v1.3.4 部署前必读
+v1.4 公共词库管理版部署前必读
 
 1. 复制本文件夹全部内容到 GitHub 本地仓库根目录。
 2. 如果旧仓库里还有 pages 文件夹，删除。
@@ -10,6 +10,13 @@ v1.3.4 部署前必读
    Main file path = main_app/app.py
    Manage app → Reboot app
 
-5. 本版本优化字体协调和单词读音：
-   - 有真实音频就显示真实播放器；
-   - 没有真实音频就用浏览器 TTS 朗读。
+5. Streamlit Secrets 必须新增：
+   ADMIN_PIN = "你自己的管理员PIN"
+   PUBLIC_WORDLIST_LOCKED = "true"
+
+6. 使用流程：
+   - 管理员登录普通学习者账号；
+   - 进入“公共词库管理”；
+   - 输入 ADMIN_PIN；
+   - 一键重置为预设词库；
+   - 普通用户只能学习，不能编辑公共词库。

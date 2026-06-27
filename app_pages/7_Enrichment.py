@@ -5,11 +5,18 @@ import streamlit as st
 from sqlalchemy import select
 
 from modules.auth_ui import require_login
+from modules.admin_service import require_admin_for_public_write
 from modules.database import get_connection, init_database, words
 from modules.enrichment_service import enrich_words, get_enrichment_summary
 
 init_database()
 user_id, display_name = require_login()
+
+can_write_public = require_admin_for_public_write("补全公共词库")
+if not can_write_public:
+    st.info("词汇补全会修改公共词库内容，因此仅管理员可操作。")
+    st.stop()
+
 
 st.title("⚙️ 词汇补全中心")
 st.warning("性能提示：补全中心最耗时，建议每批10个，先关闭自动翻译。")

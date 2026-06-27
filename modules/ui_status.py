@@ -6,7 +6,7 @@ import streamlit as st
 
 from modules.database import get_dashboard_metrics, get_database_mode
 
-APP_VERSION = "v1.3.3"
+APP_VERSION = "v1.4"
 
 
 def read_version() -> str:

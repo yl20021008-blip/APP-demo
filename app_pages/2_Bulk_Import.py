@@ -4,11 +4,18 @@ import pandas as pd
 import streamlit as st
 
 from modules.auth_ui import require_login
+from modules.admin_service import require_admin_for_public_write
 from modules.database import ensure_user_word_status, init_database
 from modules.importer import import_words, infer_chapter_from_filename, read_uploaded_file
 
 init_database()
 user_id, display_name = require_login()
+
+can_write_public = require_admin_for_public_write("批量导入公共词库")
+if not can_write_public:
+    st.info("公共词库由管理员统一维护。普通学习者不需要上传词库，直接学习预设词库即可。")
+    st.stop()
+
 
 st.title("📂 批量导入词库")
 st.info("状态：适合一次上传多个章节；导入完成后所有学习者都能看到公共词库。")
