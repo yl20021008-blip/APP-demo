@@ -12,6 +12,7 @@ init_database()
 user_id, display_name = require_login()
 
 st.title("⚙️ 词汇补全中心")
+st.warning("性能提示：补全中心最耗时，建议每批10个，先关闭自动翻译。")
 st.caption("v1.3.1 性能优化：默认小批量处理，历史记录只显示最近50条。")
 
 with get_connection() as conn:

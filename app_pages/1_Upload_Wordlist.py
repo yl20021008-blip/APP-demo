@@ -10,6 +10,7 @@ init_database()
 user_id, display_name = require_login()
 
 st.title("📥 上传词库")
+st.info("状态：上传后会写入公共词库；当前学习者会自动同步学习进度。")
 st.caption("v1.3.1 性能优化：预览只显示前200行，避免大文件预览卡顿。")
 
 book_name = st.text_input("词汇书名称", value="雅思词汇真经")

@@ -11,6 +11,7 @@ init_database()
 user_id, display_name = require_login()
 
 st.title("📂 批量导入词库")
+st.info("状态：适合一次上传多个章节；导入完成后所有学习者都能看到公共词库。")
 st.caption("v1.3.1 性能优化：批量导入时只在全部文件结束后同步一次学习状态。")
 
 book_name = st.text_input("词汇书名称", value="雅思词汇真经")

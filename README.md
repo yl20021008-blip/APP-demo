@@ -1,10 +1,18 @@
-# IELTS Vocabulary Planner v1.3.1 Performance
+# IELTS Vocabulary Planner v1.3.3
 
-这是 v1.3.1 性能优化版。
+这是 v1.3.3 页面状态优化版。
+
+## 主要优化
+
+- 顶部状态栏：当前学习者、数据库状态、版本号；
+- 侧边栏状态：登录状态、数据库模式、刷新按钮；
+- 首页根据当前状态自动提示下一步；
+- 页面出错时更容易截图排查；
+- 关键页面增加操作影响说明。
 
 ## 部署入口
 
-Streamlit Cloud 的 Main file path 请填写：
+Streamlit Cloud 的 Main file path 必须填写：
 
 ```text
 main_app/app.py
@@ -17,35 +25,9 @@ APP_MODE = "cloud"
 DATABASE_URL = "postgresql+psycopg2://postgres.xxxxx:你的密码@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres?sslmode=require"
 ```
 
-## 本版优化重点
+## 使用建议
 
-- 数据库连接池；
-- 数据库初始化缓存；
-- 自动创建查询索引；
-- 用户学习状态同步加速；
-- 我的词库分页显示；
-- 学习统计数据库聚合；
-- 补全中心默认小批量；
-- 关闭默认自动翻译；
-- 导入和预览防卡顿。
-
-## 建议使用方式
-
-### 导入词库
-
-可以导入全量 Excel，但页面只预览前200行。
-
-### 补全例句
-
-建议先这样设置：
-
-```text
-每批处理数量：10
-自动翻译英文例句：关闭
-```
-
-等英文例句补得差不多后，再打开翻译小批量补。
-
-### 词库查看
-
-“我的词库”已分页，几千词也不会一次性加载。
+- 词库导入后先进入“今日学习”测试；
+- 词汇补全每批 10 个；
+- 自动翻译先关闭；
+- 大词库查看使用分页。

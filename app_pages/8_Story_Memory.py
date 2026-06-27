@@ -18,6 +18,7 @@ init_database()
 user_id, display_name = require_login()
 
 st.title('📖 故事记忆')
+st.info('状态：故事只保存到当前学习者账号下，不会影响别人。')
 st.caption('v1.3 增强：故事从模板拼接升级为“场景路线 + 加粗目标词 + 中文释义线索 + 复习小测”。')
 
 available_count = count_available_story_words(user_id)

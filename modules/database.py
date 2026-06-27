@@ -298,45 +298,67 @@ def ensure_user_word_status(user_id: int) -> int:
 
 
 def get_dashboard_metrics(user_id: int | None = None) -> dict[str, int]:
+    """首页指标统计。
+
+    v1.3.2 修复：
+    避免 SQLAlchemy 2.x 下 func.case(..., else_=0) 报错。
+    这里拆成多个简单 count 查询，稳定性更高。
+    """
     init_database()
     now = datetime.now()
+
     with get_connection() as conn:
         total_words = conn.execute(select(func.count()).select_from(words)).scalar_one()
         total_users = conn.execute(select(func.count()).select_from(users)).scalar_one()
 
-        if user_id is None:
-            return {
-                "total_words": int(total_words or 0),
-                "new_words": 0,
-                "due_reviews": 0,
-                "learned_words": 0,
-                "total_users": int(total_users or 0),
-            }
+    if user_id is None:
+        return {
+            "total_words": int(total_words or 0),
+            "new_words": 0,
+            "due_reviews": 0,
+            "learned_words": 0,
+            "total_users": int(total_users or 0),
+        }
 
-        ensure_user_word_status(int(user_id))
+    ensure_user_word_status(int(user_id))
 
-        summary = conn.execute(
-            select(
-                func.sum(case((learning_status.c.status == "new", 1), else_=0)).label("new_words"),
-                func.sum(case((learning_status.c.status != "new", 1), else_=0)).label("learned_words"),
-                func.sum(
-                    func.case(
-                        (
-                            (learning_status.c.status != "new")
-                            & learning_status.c.next_review_at.is_not(None)
-                            & (learning_status.c.next_review_at <= now),
-                            1,
-                        ),
-                        else_=0,
-                    )
-                ).label("due_reviews"),
-            ).where(learning_status.c.user_id == int(user_id))
-        ).mappings().first()
+    with get_connection() as conn:
+        new_words = conn.execute(
+            select(func.count())
+            .select_from(learning_status)
+            .where(
+                learning_status.c.user_id == int(user_id),
+                learning_status.c.status == "new",
+            )
+        ).scalar_one()
+
+        learned_words = conn.execute(
+            select(func.count())
+            .select_from(learning_status)
+            .where(
+                learning_status.c.user_id == int(user_id),
+                learning_status.c.status != "new",
+            )
+        ).scalar_one()
+
+        due_reviews = conn.execute(
+            select(func.count())
+            .select_from(learning_status)
+            .where(
+                learning_status.c.user_id == int(user_id),
+                learning_status.c.status != "new",
+                learning_status.c.next_review_at.is_not(None),
+                learning_status.c.next_review_at <= now,
+            )
+        ).scalar_one()
+
+        total_words = conn.execute(select(func.count()).select_from(words)).scalar_one()
+        total_users = conn.execute(select(func.count()).select_from(users)).scalar_one()
 
     return {
         "total_words": int(total_words or 0),
-        "new_words": int((summary or {}).get("new_words") or 0),
-        "due_reviews": int((summary or {}).get("due_reviews") or 0),
-        "learned_words": int((summary or {}).get("learned_words") or 0),
+        "new_words": int(new_words or 0),
+        "due_reviews": int(due_reviews or 0),
+        "learned_words": int(learned_words or 0),
         "total_users": int(total_users or 0),
     }
